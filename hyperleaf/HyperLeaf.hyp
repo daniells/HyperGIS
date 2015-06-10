@@ -1,0 +1,683 @@
+ <!------------------------------------------------------------------------------
+    HyperLeaf: a Hypertag wrapper for Leaflet.js                        v 0.251
+
+    Templates:
+      <HyperLeaf>       A data-driven Leaflet template with layer management
+
+    Requires:
+        Leaflet.js      http://leafletjs.com
+        Hypertag.js     http://hypertag.io
+    
+    License:
+      © Daniel Swartzendruber, 2015 
+      MIT License for all users
+      
+    Features:
+        Hypertag-list-driven layer management
+        Recursive search through objects and arrays for coordinate bounds
+        ESRI geometry translation tool
+        Centroid calculation for polylinesgeometric objects
+        Convienent marker insertion
+        Clicked coordinate announcement using set() event
+ -------------------------------------------------------------------------------->
+
+
+ <script id="HyperLeaf" type="text/hypertag">
+    <!-- markup shml -->
+/*    
+ *      Hyperleaf will take any valid GeoJSON object and generate a Leaflet map with it.
+ *
+ *      You can also use its built-in options to generate a map from other types of data.
+ *
+ *      When asked, Hyperleaf it will automatically set the bounds of the map to the data you're displaying, or other data you give it.
+ * 
+ *      Hyperleaf comes with a layer-management strategy that integrates well with Hypertag lists.
+ *
+ *      Docs coming soon.  Read the comments below.
+ */
+
+      /******************/
+     /* Control Params */
+    /******************/
+
+    // A map center to start with
+    map_center:false,
+    // A scale to use, 0-18
+    map_scale:false,
+    // The URL of your GeoJSON source.
+    
+    // if map_center and map_scale is not given on first load, the map displays the 
+    // entire world instead.  set this false to override
+    fit_world:true,
+    
+    geojson_source: false, 
+    // If passed true the map uses the outermost points in the GeoJSON as the map bounds.
+    // If passed an array [topandright,bottomandleft] it adds that many degrees of margin to the area of interest.
+    use_geojson_bounds:false,
+    // This overrides map_center and map_scale
+    // Request for GeoJSON is an asyncronous ajax call, so the Leaflet map will not fitBounds() until the data is loaded.
+
+    // If true, clicking on the map will set(self, 'clicked_coord', {coordinate}) 
+    // you can listen to self.clicked_coord this to grab the output of a click event
+    click_sets_coordinate:false,
+    
+    // If passed a list of coordinates this will place markers on the map for each one.  
+    // If passed a list of objects in the form 
+    // {latlon:array , markeroptions:object, popup:string, popupoptions:object } 
+    // You may also use 
+    // {lat:num, lon:num, ... }
+    // Everything but the coordinate is optional.  
+    // Supplying a popup:string will make the marker clickable with a popup.
+    // Supplying markeroptions:object will overrride the default marker options.
+    // Supplying popupoptions:object will overrride the default popup options.
+    // Examples:
+    //      map_markers:[ [], [], ... ]
+    //      map_markers:[ {latlon[], options:{}, popup:"Hi there!", popupoptions:{}}, ... ]
+    //      map_markers:[]
+    //      map_markers:{latlon[], options:{}, popup:"Hi there!", popupoptions:{}}
+    
+    map_markers:false,
+    
+    // You can turn off the attribution layer by setting this to false.  You cad.
+    attribution_layer:true,
+    
+      /************************/
+     /* Evaluated Parameters */
+    /************************/
+
+    // The evaluated GeoJSON from geojson_source, fetched by $.ajax() req on __init__
+    evaluated_geojson: false, 
+    // Every map must have its own guid: one map per Hyperleaf instance.
+    map_id:false,
+    // this will be a reference to the map when it is created
+    map: false, 
+    
+    // toDO: this is an object graph of references to all layers and layergroups in the map.  you can iterate over it to navigate the map.
+    // map_tree: false,
+    
+    keyboard:false,
+    
+    // enabling click_sets_coordinate will cause a click handler to set() the latlon on this attr every time the map is clicked
+    clicked_coord:false,
+    
+    // if the user passed coordinate lists to map_markers the layer for them will be bound to this
+    marker_group:false,
+    
+    
+      /*************/
+     /* Map Hooks */
+    /*************/
+    // these will just become a hooks to L.map methods on __load__
+    setView:false,
+    
+    
+    
+      /***********************************/
+     /* Layers, Groups, and collections */
+    /***********************************/
+
+    // An good strategy for managing your layers is to create L.layerGroup()s that you don't actually add to the map.  
+    // Use layerGroup.addLayer(geometry) to create layers inside the layergroups.
+    // Put the layergroups on an attribute in HyperLeaf, then use self.map.addLayer(layerGroup._layers[key]) to add it to the map. 
+    // Use self.map.removeLayer(layerGroup._layers[key]) to remove it from the map.  
+    // This way you can cache the layer objects and thier expensive geometry and cleanly toggle thier display.
+    //
+    // By firing these methods in the __selected__ and __unselected__ delegates on Hypertag lists, you can manage layer cleanly, 
+    // without using CSS hiding strategies. You can also keep these expensive geometric objects cached without polluting the map
+    // namespacefunction.
+    //
+    // The methods and attributes below are helpers to make using this sprt of pattern easier.
+
+    // These are are collections of layergroups and featuregroups.  
+    // fyi: the difference between a layer and a feature is that features have Leaflet map events.
+    layer_groups:{}, 
+    feature_groups:{},
+    // A bounds collection. You can put multiple bounds objects in here and 
+    // self.collectionBounds() will return a new bounds object encompassing
+    // the extents of all these.  
+    bounds_collection:{},
+    // findGroupInGroups() searches a layergroup or featuregroup for members with a given property, 
+    // or property/value combination.
+    // if more than one returns an array of them    
+    makeLayer:function(){},
+    // generate globally unique identifiers for map, layergroup, and layer ids
+    makeGUID:function(){return MD5(Date.now().toString() + Math.random().toString());},
+    // Generator to create an empty layerGroup to stick layers in.
+    // Creates a ref to it on this Hyperleaf instance, gives itself a guid, and also returns a reference to the newly created layergroup();
+    // you can pass it a set of ilayers just like you could pass one to L.layerGroup()
+    // see http://leafletjs.com/reference.html#layergroup
+    makeLayerGroup:function(){
+        var guid = self.makeGUID();
+        if(!self.layer_groups) self.layer_groups = {};
+        self.layer_groups[guid] = L.layerGroup(arguments);
+        self.layer_groups[guid].guid = guid;
+        return self.layer_groups[guid];
+    },
+    // give all the layer adding methods aliases such that thier geojson text names will match the native method names
+    // maybe later we can use o.LayerGroup.o.Class.extend.addLayer(rn, o, i, i)
+    Path:           function(geometry){ return L.path(geometry);}, 
+    Polyline:       function(geometry){ return L.polyline(geometry);}, 
+    MultiPolyline:  function(geometry){ return L.multiPolyline(geometry);}, 
+    Polygon:        function(geometry){ return L.polygon(geometry);}, 
+    MultiPolygon:   function(geometry){ return L.multiPolygon(geometry);},  
+    Rectangle:      function(geometry){ return L.rectangle(geometry);},   
+    Circle:         function(geometry){ return L.circle(geometry);}, 
+    CircleMarker:   function(geometry){ return L.circleMarker(geometry);},  
+        
+    // Generator to create an empty featureGroup to stick layers in.
+    // Creates a ref to it on this Hyperleaf instance, gives itself a guid, and also returns a reference to the newly created layergroup();
+    // You can pass it a set of ilayers just like you could pass one to L.featureGroup()
+    // For the difference between features and layers see the docs:
+	// http://leafletjs.com/reference.html#featuregroup
+    makeFeatureGroup:function(){
+        var guid = self.makeGUID();
+        self.feature_groups[guid] = L.featureGroup(arguments);
+        self.feature_groups[guid].guid = guid;
+        return self.feature_groups[guid];
+    },
+    // findLayersInGroup() searches a layergroup or featuregroup for members with a given property, 
+    // or property/value combination.
+    // if more than one is found this returns an array of layers.  otherwise it just returns a layer.
+    findLayersInGroup:function(group, key, val){
+        var found = [];
+        for(var k in group._layers){
+            if(val){
+                if(group[k][key]==val)
+                    found.push(group[k]);
+            }
+            else if(group[k][key]!==undefined)
+                found.push(group[k]);
+        }
+        if(found.length !== 0){
+            if(found.length !== 1)
+                return push;
+            else return push[0];
+        }
+        else return false;
+    },
+
+    // findLayersInGroups() searches a layergroup or featuregroup *collection* for members layers with a given property
+    // or property/value combination.
+    // If more than one returns an array of layers.  otherwise it just returns a single layer.
+    // You could use his exclusivley and never touch findlayersInGroup()
+    findLayersInGroups:function(layergroup, key, val){
+        var layers = [];
+        for(var k in layergroup){
+            layers.push((function(){
+                findLayerInGroup(layers[k], key, val);
+            })());      
+        }
+        push.filter(function(item){if(item) return true; else return false;});
+        if(found.length !== 0){
+            if(found.length !== 1)
+                return push;
+            else return push[0];
+        }
+        else return false;
+    },
+    
+    // findGroupInGroups() searches a layergroup or featuregroup *collection* for members layers with a given property
+    // or property/value combination.
+    // if more than one returns an array of layers.  otherwise it just returns a single layer.
+    findGroupInGroups:function(layergroup, key, val){},
+    
+      /******************************/
+     /* Unit and Format Conversion */
+    /******************************/
+    
+    //  This is how you will call a leaflet path factory corresponding to an esri feature_type (a.k.a esriGeometryType , a.k.a. geometry class)
+    //  
+    //  var feature = mapdata.featuredatasets._data[uid]
+    //  _esri_feature_type_to_leaflet_path_factory[String(feature.feature_type)](feature.points).addTo(map); 
+    //      or
+    //  layerGroup.addTo(_esri_feature_type_to_leaflet_path_factory[String(feature.feature_type)]);
+    //
+    // see also:
+    //      resources.esri.com/help/9.3/ArcGISmobile/adf/ESRI.ArcGIS.Mobile~ESRI.ArcGIS.Mobile.Geometries_namespace.html
+    //      resources.esri.com/help/9.3/arcgisengine/ArcObjects/esriGeometry/esriGeometryType.htm
+    esri_feature_type_to_leaflet_layer_factory:{
+        //esriGeometryPoint
+        //  leaflet doesn't do points, it does markers.  
+        "1":L.marker,
+        //esriGeometryMultipoint,
+        "2":function(multipoint_array, map_layergroup_to_add_to){
+            //  Leaflet doesn't have a multimarker call, so this function
+            //  automatically generates markers for every point in the multipoint array.
+            //  Calling with map_layergroup_to_add_to returns the L.layerGroup with those markers now added.
+            //  Otherwise it just returns an array of L.markers for you to do whatever you want with
+            var multimarker_array = [];
+            for(var i=0; i!=multipoint_array.length; i++){
+                multimarker_array[i] = L.marker(multipoint_array[i]);
+            }
+            if(map_layergroup_to_add_to){
+                for(var i=0; i!=multimarker_array.length; i++){
+                    map_layergroup_to_add_to.addLayer(multimarker_array[i]);
+                }
+                return map_layergroup_to_add_to;
+            }
+            else return multimarker_array;
+        },
+        //esriGeometryPolyline,
+        "3":L.polyline,
+        //esriGeometryPolygon,
+        "4":L.polygon,
+        //esriGeometryEnvelope,
+        // These are always rectangles, and should be made using L.rectangle at some point. 
+        //    don't care about extracting the bounds right now.  
+        "5":L.polygon,
+        //esriGeometryPath
+        "6":L.polyline
+        /* Leaflet path entity methods
+            L.marker()
+            L.polyline()
+            L.multiPolyline()
+            L.polygon()
+            L.multiPolygon()
+            L.rectangle()
+            L.circle()
+            L.circleMarker()
+        */
+    },
+    // a lookup table to match esri feature types to Leaflet feature types
+    _esri_feature_type_to_geojson_type:{
+        //esriGeometryPoint
+        //  leaflet doesn't do points, it does markers.  
+        "1":"Point",
+        //esriGeometryMultipoint,
+        "2":"MultiPoint",
+        //esriGeometryPolyline,
+        "3":"LineString",
+        //esriGeometryPolygon,
+        "4":"Polygon",
+        //esriGeometryEnvelope,
+        "5":"Polygon",
+        //esriGeometryPath
+        "6":"LineString"
+    },
+    
+    // This method converts an array of [[x,y],[x,y],..]
+    // to an array of [[y,x],[y,x],...] -- in place.
+    // In other words it converts the the Lon,Lat format found in compliant 
+    // geojson and esri shape into the Lat,Lon format that native leaflet methods expect. 
+    // This mutates data in place. It does not return a new array.
+    // This method supports multiple arguments.  It will convert as many cordinate pairs as are passed to its brackets with comma separation.
+    //    eg. convertEN2NE(pair1, pair2, pair3, etc);
+    /*
+    convertEN2NE:function(){
+        var x,y;
+        for(var i = 0; i !== arguments.length; i++){
+            for(var j = 0; j !== arguments[i].length; j++){
+            console.log("arguments i j 0  ",arguments[i][j][0]);
+                x = arguments[i][j][0];  = arguments[i][j][1];
+                arguments[i][j][0] = y; arguments[i][j][1] = x;
+            }
+        }
+    },
+    */
+    convertEN2NE:function(array){
+        var x,y;
+        for(var i = 0; i !== array.length; i++){
+            x = array[i][0]; y = array[i][1];
+            array[i][0] = y; array[i][1] = x;
+        }
+    },
+    // Running this method on the array again will reverse the process.
+    
+    // This method copies an array of [[x,y],[x,y],..]
+    // to an array of [[y,x],[y,x],...]
+    // In other words it converts the the Lon,Lat format found in compliant 
+    // geojson and esri shape into the Lat,Lon format that native leaflet methods expect. 
+    // This returns a new array.
+    copyEN2NE:function(array){
+        var x,y, newarray = [];
+        for(var i = 0; i !== array.length; i++){
+            newarray.push([array[i][1],array[i][0]]);
+        }
+        return newarray;
+    },
+
+      /***************/
+     /*   Geometry  */
+    /***************/
+    
+    // Given a boundary, return the euclidian x,y center by averaging its points.
+    //
+    // If there are any problems with the data this returns false.
+    //
+    // This assumes your coordinates are in system-agnostic xy format. 
+    // If your coordinates are in LatLon they are yx and you need to pass true for the is_lat_lon agument. 
+    //
+    // If there are problems with the data, returns false.
+    //
+    centroid:function(boundary, is_lat_lon){
+        var sumx = 0, sumy = 0, results = false;
+        if(arguments[0].constructor === Array){
+            if(arguments[0][0].constructor === Array){
+                for(var i = 0; i !== arguments[0].length; i++){
+                    sumx += arguments[0][i][0];
+                    sumy += arguments[0][i][1];
+                    //console.log(sumx,",",sumy);
+                }
+                results = [ (sumx / arguments[0].length) , (sumy / arguments[0].length) ];
+            }
+            else if(arguments[0][0].constructor === Number){
+                for(var i = 0; i !== arguments[0].length; i+=2){
+                    sumx += arguments[0][i];
+                    sumy += arguments[0][i+1];
+                }
+                results = [ sumx/(arguments[0].length/2) , sumy/(arguments[0].length/2) ];
+            }
+        }
+        else if(arguments[0].constructor === Number){
+            //console.log("is numbers not array");
+            if(arguments.length%2 !== 0) return false;
+            for(var i = 0; i !== arguments.length; i+=2){
+                sumx += arguments[i];
+                sumy += arguments[i+1];
+            }
+            results = [ sumx/(arguments.length/2) , sumy/(arguments.length/2) ];
+        }
+        if(is_lat_lon)
+            return [results[1], results[0]];
+        else return results;
+    },  
+    // Given a boundary or line return the length/permiter of it.
+    // You can pass this an array of xy vertices, or as comma-delimited points asarguments to the function, i.e.
+    // self.lineLength([[x,y],[x,y],...])
+    // self.lineLength([x,y,x,y,...])
+    // self.lineLength(x,y,x,y,...)
+    // 
+    // Of course you can use this to give you the euclidian distance between two points as well.
+    // If there are any problems with the data this returns false.
+    //
+    /*
+    
+    FOR THIS TO WORK A COPY OF THE CULTURE DATA WILL HAVE TO BE 
+    REPROJECTED INTO UTM BEFORE BEING PASSED TO THE METHOD.
+    THIS MEANS FROM EPSG:3857 TO...
+    OH GOD I NEED A LOOKUP TABLE WITH BOUNDING BOXES AND EVERY UTM ZONE.  JESUS.
+    
+    At least I can use https://github.com/kartena/Proj4Leaflet to do the conversion once I know the zone.
+    
+    
+    lineLength:function(boundary, is_lat_lon){
+            if(arguments[0].constructor === Number){
+                var reals = Array.prototype.slice.call(arguments).filter(function(elem){return elem.constructor === Number;});  
+                if(reals.length%2 === 0){ 
+                    var sum = 0;
+                    for(var i=0; i {- reals.length-2; i+=2){
+                        sum +=  ( Math.sqrt( Math.pow( (reals[i+2] - reals[i]),2) + Math.pow( (reals[i+3] - reals[i+1]) ,2) ) );
+                    }
+                    return sum;
+                }
+                else return false;
+            }
+            else if(arguments[0].constructor === Array){
+                if(arguments[0][0].constructor === Number){
+                    var reals = arguments[0].filter(function(elem){return elem.constructor === Number;});  
+                    if(reals.length%2 === 0){ 
+                        var sum = 0;
+                        for(var i=0; i {- reals.length-2; i+=2){
+                            sum +=  ( Math.sqrt( Math.pow( (reals[i+2] - reals[i]),2) + Math.pow( (reals[i+3] - reals[i+1]) ,2) ) );
+                        }
+                        return sum;
+                    }
+                    else return false;
+                }
+                else if(arguments[0][0].constructor === Array){
+                    console.log("data is an array o arrays");
+                    var sum = 0, pairs = arguments[0].filter(function(elem){return elem.constructor === Array;});
+                    for(var i=0; i {- pairs.length; i++){
+                        if(pairs[i+1]){
+                            var reals_a = pairs[i].filter(function(elem){return elem.constructor === Number;});
+                            var reals_b = pairs[i+1].filter(function(elem){return elem.constructor === Number;});
+                            if(reals_a.length === 2 && reals_b.length === 2)
+                                console.log(reals_b[0],reals_a[0],reals_b[1],reals_a[1]);
+                                sum +=  ( Math.sqrt( Math.pow( (reals_b[0] - reals_a[0]),2) + Math.pow( (reals_b[1] - reals_a[1]),2) ) );
+                        }  
+                    }
+                    return sum;
+                }
+                else return false;
+            }
+            else return false;
+    },
+    */
+    // Given an object or array find the widest Southwest and Northeast corners and return an object containing them.
+    //
+    // If return_as_bounds_obj is true this returns a formal L.bounds object instead of just a [[lat,Lon],[lat,Lon]] array.
+    //
+    // This searches recusivley, and doesn't care about data structure.  
+    // If you want the bounds of multiple objects encapsulate them in an array.
+    //
+    // If there are any problems with the data this returns false.
+    //
+    findOuterBoundsInData:function(array_or_obj, return_as_bounds_obj){
+
+        // Helper functions for the recursive function below
+        var isArray = function(obj){
+            return obj.constructor === Array ? true: false;
+        };
+        var isNum = function(obj){
+            return obj.constructor === Number ? true: false;
+        };
+        
+        var isObj = function(obj){
+            return obj.constructor === Object ? true: false;
+        };
+        var isArrayOnlyNumbers = function(array){
+            for(var i = 0; i!== array.length; i++){
+                if(array[i].constructor !== Number) return false;
+            }
+            return true;
+        };
+        
+        // now check to see if array_or_obj is the right datatype with some data in it.  function exits false if not.
+        
+        if(isArray(array_or_obj)){
+            if(array_or_obj.length === 0) return false; 
+        }
+        else if(isObj(array_or_obj)){
+            if(Object.keys(array_or_obj).length === 0) return false;
+        }
+        else return false; 
+            
+        // Bookkeeping setup
+        //            sw  ne
+        var bounds = [[], []];
+        var coordsToCompare = [];
+        // define a function to test a lat-lon array for coordinates that lie outside bounds[]
+        // and extend them if they do.
+        var compareAndUpdateBounds = function(lon_lat_array){
+            //sw
+            bounds[0][0] = bounds[0][0] ? Math.min(bounds[0][0], lon_lat_array[0]) : lon_lat_array[0];
+            bounds[0][1] = bounds[0][1] ? Math.min(bounds[0][1], lon_lat_array[1]) : lon_lat_array[1];
+            //ne
+            bounds[1][0] = bounds[1][0] ? Math.max(bounds[1][0], lon_lat_array[0]) : lon_lat_array[0];
+            bounds[1][1] = bounds[1][1] ? Math.max(bounds[1][1], lon_lat_array[1]) : lon_lat_array[1];
+        };
+        
+        // a recursive function to test nested data structures for bounds extreminites
+        var findCoordinatesInData = function(item){
+            if(isArray(item)){
+                // coordinates can be [x,y] or [x,y,z]
+                if( (item.length === 2 || item.length === 3) && isArrayOnlyNumbers(item) ){
+                        // Base case
+                        compareAndUpdateBounds(item);
+                }
+                else{
+                    for(var i = 0; i !== item.length; i++){
+                        findCoordinatesInData(item[i]);
+                    }
+                }
+            }
+            else if(isObj(item)){
+                for(var key in item){
+                    findCoordinatesInData(item[key]);
+                }
+            }
+        };
+        // call the recursive function on the item this method was called with
+        findCoordinatesInData(array_or_obj);
+        // return the results in desired format
+        if(return_as_bounds_obj)
+            return L.bounds([[ bounds[0][1], bounds[0][0] ],[ bounds[1][1], bounds[1][0] ]]);
+        else
+            return [[ bounds[0][1], bounds[0][0] ],[ bounds[1][1], bounds[1][0] ]];
+    },
+
+      /*******************/
+     /*   Fit Bounds    */
+    /*******************/    
+    
+    // given an object of any type, set the bounds of the map to 
+    // the furthest bounds found within it
+    //
+    boundsNow:function(object_or_array, options){
+        if( (object_or_array.constructor === Object && Object.keys(object_or_array).length) || object_or_array.constructor === Array ){
+                self.map.fitBounds( self.findOuterBoundsInData(object_or_array), options);
+                return true;        
+        }
+        else return false;
+    },
+    // set the map to the bounds found in self.bounds_collection
+    collectionBoundsNow:function(options){
+        self.boundsNow(self.collectionBounds(), options);
+        return true;
+    },
+    
+    
+      /******************/
+     /*   Validation   */
+    /******************/
+    
+    // A test initalization
+    testGeoJSONInit:function(){
+        L.geoJson(self.evaluated_geojson)
+        .addTo(self.map);
+    },
+    
+      /**********/
+     /* Events */
+    /**********/
+    __init__:function(){
+        self.map_id = self.map_id ? self.map_id : self.makeGUID();
+        GLOBAL.findOuterBoundsInData = self.findOuterBoundsInData;
+    },
+    __load__: function(){
+        /*
+         *      MAP SETUP
+         */
+        // define the map options
+        if(!self.map_options)
+            self.map_options = {
+                id:self.map_id,
+                keyboard:self.keyboard
+            };
+        // Create the map
+        self.map = L.map(self.map_id,self.map_options);
+
+        // Add the mandatory attribution for OpenStreetMap and Leaflet
+        if(self.attribution_layer)
+            L.tileLayer('http:\/\/{s}.tile.osm.org\/{z}\/{x}\/{y}.png', {
+                    attribution: '&#169; {-a href="http:\/\/openstreetmap.org\/copyright"-}OpenStreetMap{-\/a-} contributors'
+                })
+                .addTo(self.map);
+        /*
+         *      MAP METHOD HOOK SETUP
+         */
+        self.setView = self.map.setView;
+        /*
+         *      USER CONTROL VAR SETUP
+         */
+        /*** If the user enabled map clicking for coordinates. ***/
+        if(self.click_sets_coordinate){
+            self.map.on('click', function(e){
+                //self.set("clicked_coord", e.latlng );
+                self.set("clicked_coord", e );
+            });
+        }
+        /*** If the user gave a map_center coordinate, center the map there an give it its scale. ***/
+        if(self.map_center.constructor === Array){ self.map.setView(self.map_center, self.map_scale); }
+        /*** Otherwise fit the map to the world if the user didn't disable that. ***/
+        else if(self.fit_world){
+            self.map.fitWorld({
+                    paddingTopLeft:[0,0],
+                    paddingBottomRight:[0,0],
+                    padding:[0,0],
+                    maxZoom: self.map_scale ? self.map_scale : null
+                });
+        }
+        /*** If the user supplied a viable list of map markers apply them to the map. ***/
+        if(self.map_markers){
+            var markers = [];
+            var coord, marker;
+            if(self.map_markers.constructor === Array){
+                // if the user supplied a list of coordinates
+                if(self.map_markers[0].constructor === Array){
+                    for(var i = 0; i!== self.map_markers.length ; i++){
+                        markers.push(L.marker(self.map_markers[i]));
+                    }
+                }
+                // if the user supplied a list of objects
+                else if(self.map_markers[0].constructor === Object){
+                    for(var i = 0; i!== self.map_markers.length; i++){
+                        if(self.map_markers[i].latlon) coord = self.map_markers[i].latlon;
+                        else if(self.map_markers[i].lat && self.map_markers[i].lon) coord = [self.map_markers[i].lat, self.map_markers[i].lon];
+                        marker = L.marker(coord);
+                        if(self.map_markers[i].popup)
+                            marker.bindPopup(self.map_markers[i].popup, self.map_markers[i].popupoptions ? self.map_markers[i].popupoptions : {} );
+                        markers.push(marker);
+                    }
+                }
+                // the user supplied a single coordinate
+                else if(self.map_markers[0].constructor === Number){
+                    markers.push(L.marker(self.map_markers));
+                }
+            }
+            // now add the marker layer to the map
+            self.marker_group = L.layerGroup(markers);
+            self.marker_group.addTo(self.map);
+            //self.map.addLayer(self.marker_group);
+        }
+        /*** Set up a listen on our evaluated GeoJSON attribute, and trigger map creation.  ***/
+        self.listen(self, "evaluated_geojson", function(){
+            // Perform an init method
+            self.testGeoJSONInit();
+            // if use_geojson_bounds is enabled, generate geometry according to rules noted above and invoke fitBounds() 
+            if(self.use_geojson_bounds){
+                var options = {};
+                var bounds = self.findOuterBoundsInData(self.evaluated_geojson);
+                if(self.use_geojson_bounds.constructor === Array){
+                    options.padding = self.use_geojson_bounds;
+                }
+                // apply map.fitBounds()
+                self.map.fitBounds( bounds , options);
+            }
+        }); 
+        if(self.geojson_source.constructor === String){
+            // Fetch the GeoJSON to parse in an ajaxy way and set() it on self.evaluated_geojson when the callback returns.
+            $.ajax({
+                data:    {},
+                async:   true, 
+                dataType: "json",
+                type:    "GET",
+                url:     self.geojson_source,
+                // the callback function
+                complete: function(data, textStatus){
+                    // If the AJAX call returned sucessfully
+                    if(textStatus === "success")
+                      set(self, 'evaluated_geojson', data.responseJSON);
+                    }
+                }
+            );
+        }
+        else if(self.geojson_source.constructor === Object){
+            set(self, 'evaluated_geojson', self.geojson_source);
+        }
+    }
+    <view id="[=self.map_id=]"
+          class="padded"
+          height="%%{self.parent.height}"
+          width="%%{self.parent.width}">
+</script>

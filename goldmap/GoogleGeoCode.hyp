@@ -1,0 +1,125 @@
+<script id="GoogleGeoCode" type="text/hypertag">
+    <!-- markup shml -->
+/*     Google Geocode 
+ *
+ *     This places the AJAX method self.googleGeoCode() on your tag.
+ *     It sets() results on self.goog_geocode_result so listen() to that attribute 
+ *     to trigger async behavior.  You can completley avoid callbacks using
+ *     this Hypertag events strategy.
+ *
+ *     self.googleGeoCode( [lat,lon] ) fetches an address string.
+ *     self.googleGeoCode( "address" ) fetches a [lat,lon].
+ */
+
+    // Set a listen on this before using self.googleGeoCode(), and get your result that way if you set call it with sync false.
+    // Otherwise the googleGeoCode() method returns the result syncronously.
+    goog_geocode_result:false,
+    
+    // self.googleGeoCode(lat_long_or_address[, async][, line_breaks][, https][, full_result][, api_key]) 
+    // takes an array of lat,long or a street address as a string, and returns 
+    // reverse geocding as a street addess(string) or geocoding as a latlon(array)
+    //
+    // Output is set() on self.goog_geocode_result so self.listen() to that property on your Hypertag for the result 
+    //
+    // lat_long_or_address :  either an array in the form [lat,long] or a string in the form "1428 Elm Street.."
+    // async               :  a boolean indicating wether or not to make the 
+    // https               :  a boolean determining wether to use SSL or not.  Optional.
+    // line_breaks         :  a boolean determining wether the address has newlines between significant sections
+    // full_result         :  a boolean indicating wether to simply return the completeobject result
+    // api_key             :  a string; an API key tied to a google account.  Google uses this for quota management. Required for high- applications.        
+    //
+    googleGeoCode:function(lat_long_or_address, async, line_breaks, full_result, https, api_key){
+        // if the user wants a secure connection 
+        https = https?"s":"";
+        // a flag to tell us if we're returning the latlong of an adddress
+        var reverse_geocode = false;
+        // An obj to hold the ajax params
+        var get_args = {
+            data:    {},
+            async:   async?true:false, 
+            dataType: "json",
+            type:    "GET",
+            url:     "http" + https + ":\/\/maps.googleapis.com/maps/api/geocode/json",
+            // the callback function
+            complete: function(data, textStatus){
+                // If the AJAX call returned sucessfully
+                if(textStatus === "success"){
+                    // if google reports success
+                    if(data.responseJSON.status === "OK" ){
+                        // if the invoker requested the full result object from google
+                        if(full_result)
+                            self.goog_geocode_result = data.responseJSON;
+                        // if they didn't they just get the result based on the other params
+                        else{
+                            self.goog_geocode_result = reverse_geocode ? 
+                                [data.responseJSON.results[0].geometry.location.lat, data.responseJSON.results[0].geometry.location.lng] :
+                                reverse_geocode ? self.goog_geocode_result = data.responseJSON.results[0].formatted_address.replace(/,\s/gi,"{-br \/-}") :data.responseJSON.results[0].formatted_address;
+                        }
+                    }
+                    else if(data.responseJSON.status === "INVALID_REQUEST"){
+                        self.goog_geocode_result = "Invalid data for Google geocoding.";
+                    }
+                    else if(data.responseJSON.status === "OVER_QUERY_LIMIT"){
+                        self.goog_geocode_result = "You're over your Google geocoding query limit.";
+                    }
+                    else if(data.responseJSON.status === "REQUEST_DENIED"){
+                        self.goog_geocode_result = "Google is denying your geocoding request.";
+                    }
+                    else if(data.responseJSON.status === "UNKNOWN_ERROR"){
+                        self.goog_geocode_result = "Google geocoding server error.";
+                    }
+                }
+                // Trigger listeners
+                send(self, 'goog_geocode_result');
+            }
+        };
+        //If the user passed an array of [lat,long]
+        if(lat_long_or_address.constructor === Array){
+            get_args.data.latlng = lat_long_or_address[0].toString() + "," + lat_long_or_address[1].toString();
+        }
+        // If the user passed a string, e.g. an address
+        if(lat_long_or_address.constructor === String){
+            get_args.data.address = lat_long_or_address.replace(/\s{1,}/gi,"+");
+            reverse_geocode = true;
+        }
+        // If the user passed an api_key add that to the request
+        if(api_key){
+            get_args.data.key = api_key.toString();
+        }
+        result = $.ajax(get_args);
+    }
+</script>
+
+<!-- 
+    This is just reference example code right now. Nothing special's going on. 
+    Leaflet has its own geolocation API so this won't even be nessecary.. PROBABLY.
+-->
+<script id="Geolocation" type="text/hypertag">
+    
+
+    geoFindMe:function(){
+          if(navigator.geolocation){
+              navigator.geolocation.getCurrentPosition(success, error, geo_options);
+          }
+          else{
+              alert("Geolocation services are not supported by your web browser.");
+          }
+          function success(position) {
+              var latitude = position.coords.latitude;
+              var longitude = position.coords.longitude;
+              var altitude = position.coords.altitude;
+              var accuracy = position.coords.accuracy;
+ 
+              //do something with above position thing e.g. below
+              alert('I am here! lat:' + latitude +' and long : ' +longitude );
+        };
+        error:function(error) {
+            alert("Unable to retrieve your location due to "+error.code + " : " + error.message);
+        };
+        var geo_options = {
+            enableHighAccuracy: true,
+            maximumAge : 30000,
+            timeout : 27000
+        };
+    }
+</script>

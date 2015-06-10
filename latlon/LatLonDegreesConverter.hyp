@@ -1,0 +1,192 @@
+<script id="LatLonDegreesConverter" type="text/hypertag">
+    <!-- markup shml -->
+
+    // flag to tell us if the user has touched the text area yet
+    isfirsttime:true,
+
+    // Clear textarea
+    clearAreaForFirstTime:function(clearanyway){
+        if(self.isfirsttime || clearanyway){
+            //self.$named('convertinput').val("");
+            if(!self.isfirsttime)
+                self.lookuptemplate("PageContainer").reload();
+            self.isfirsttime = false;
+        }
+    },
+    // Return a decimal degree from either d/m/s or d/m.m string.
+    decimalDegreesFromString:function(coordinate){
+        if(coordinate.constructor == String){
+            // An ugly but thorough line which removes spaces and newlines and splits a string on all possible LatLong coord delimiters
+            var subunits = coordinate.replace(/\s| /gi,"").split(/[\u0307|\u00B0|\u0358|\u0374|\u030D|\u0329|\u0315|\u0060|\u0022|\u00B4|\u00B7\u02BA|\u02B9|\u02C8|\u02EE|\u0309|\u0315|\u0314|\u0313|\u0312\u031B|\u033E|\u0348|\u0374|\u0027]/gi);
+            // Convert all strings to floats, flipping sign for minutes and seconds as nessecary
+            for(var i = 0; i !== subunits.length; i++){
+                subunits[i] = parseFloat(subunits[i]);
+                if( i !== 0 && subunits[0] {- 0 ){
+                    subunits[i] = subunits[i] * -1;
+                }
+            }
+            // convert and add minutes
+            if(subunits[1])
+                subunits[0] = subunits[0] + subunits[1]/60;
+    
+            // convert and add seconds
+            if(subunits[2])
+                subunits[0] = subunits[0] + subunits[2]/3600;
+     
+            return subunits[0];
+        }
+        // If it's a number we could convert back into d/m/s
+        // else if(coordinate.constructor == Number){}
+        else return false;
+    },
+    // Given a LatLong string delimited by a comma, return an object {lat,lon,long,x,y}
+    // long,x,y are just references to lon,lon,lat
+    LatLonStringToDecimalDegrees:function(latlon){
+        latlon = latlon.split(/\u002C|\u002F|\u002F/gi);// split on comma, backslash, or fwd slash
+        latlon = {
+            lat: self.decimalDegreesFromString(latlon[0]), 
+            lon: self.decimalDegreesFromString(latlon[1])
+        };
+        latlon.long = latlon.lon;
+        latlon.x = latlon.lon;
+        latlon.y = latlon.lat;
+        return latlon;
+    },
+    // This checks a string to make sure it contains valid coordinate data.
+    // This won't catch everything, but it will filter out most invalid inputs.
+    // Returns a boolean.
+    validateInput:function(inputstring){
+        if( inputstring.match(/[a-zA-Z]{2,}/g) || !inputstring.match(/[0-9]/g) || !inputstring)
+            return false;
+        return true;
+    },
+    coordStringRev:function(string){
+            string = string.split(",");
+            string = string[1] + "," + string[0];
+            return string;
+    },
+    coordStringtoNumericCoords:function(coordstring){
+        console.log(coordstring);
+        coordstring = coordstring.split(",");
+        coordstring[0] = Number(coordstring[0]);
+        coordstring[1] = Number(coordstring[1]);
+        return coordstring;
+    },
+    // Our main conversion function.
+    // This grabs the string from an input field and replaces it with output from one of the two functions above.
+    convertInputCoord:function(){
+        
+        // fetch user text from inputarea
+        var inputtext = self.$named('convertinput').val();
+        var outputtext = false;
+        
+        // ensure the string contains valid coordinate data
+        if(!self.validateInput(inputtext)) return false;
+        
+        if(inputtext !== ""){
+            // if there's a character denoting two coordinates
+            if(inputtext.match(/\u002C|\u002F|\u002F/gi)){
+                // Convert the coordinates from the input field val
+                var coords = self.LatLonStringToDecimalDegrees(inputtext);
+                outputtext = coords.lat.toString().concat( ",", coords.lon.toString());
+            }
+            // if the iput text is in the format like 40° 26′ 46″ N 79° 58′ 56″ W
+            //
+            //      THIS STILL DOES NOT WORK
+            //
+            else if(/[NWSE]/gi.test(inputtext)){
+                var nwse = {};
+                // latitude
+                var northRxp = new RegExp('[(?:^)(?:W)(?:E)].*[N]','gi');
+                var southRxp = new RegExp('[(?:^)(?:W)(?:E)].*[S]','gi');
+                // longitude
+                var eastRxp = new RegExp('[(?:^)(?:N)(?:S)].*[E]','gi');
+                var westRxp = new RegExp('[(?:^)(?:N)(?:S)].*[W]','gi');
+                // clean indicator characters
+                var stripRxp = new RegExp('[NWES^,]','gi');
+                
+                // if it contains a North or South lat coordinate
+                if(/N/gi.test(inputtext))
+                    nwse.lat = inputtext.match(northRxp)[0].replace(stripRxp,"");
+                else if(/S/gi.test(inputtext))
+                    nwse.lat = "-" + inputtext.match(southRxp)[0].replace(stripRxp);
+                
+                // if it contains a West or East long coordinate
+                if(/[W]/gi.test(inputtext))
+                    nwse.lon = "-" + inputtext.match(westRxp)[0].replace(stripRxp,"");
+                else if(/[E]/gi.test(inputtext))
+                    nwse.lon = inputtext.match(eastRxp)[0].replace(stripRxp);
+                
+                console.log("nwse ==", nwse);
+                //outputtext = self.decimalDegreesFromString(nwse.lat +"," + nwse.lon);
+            }
+            // if no lat/lon delimiters we assume it was a single geo x or y coordinate: not both 
+            else{
+                if(inputtext.match(/\u002C|\u002F|\u002F/gi)){
+                    outputtext = self.decimalDegreesFromString(inputtext);
+                }
+            }
+            // if any of the critera were met
+            if(outputtext){
+                // set the flag on mysef
+                self.set('yxcoords', self.coordStringtoNumericCoords(outputtext));
+                
+                // if the checkbox denoting the Lat,Long pair should be reversed is checked
+                if(self.$named('xy').is(':checked')){
+                    outputtext = self.coordStringRev(outputtext);
+                    // set another xy flag on myself
+                    self.set('xycoords', self.coordStringtoNumericCoords(outputtext));
+                }
+                // set the value of the field
+                self.$named('convertinput').val(outputtext);
+            }
+        }
+        // set the flag that prevents click-clearing the input
+        self.isfirsttime = false;
+    }
+    <view class="center"
+          title="This tool converts antiquated forms of Lat/Long coordinates to decimal.  Paste your DMS into this field and click [To Decimal Degrees]"
+          width="%%{self.parent.width}"
+          height="%%{self.parent.height}">
+            
+        <div class="width100 bigtopspacer overflowhidden" name="buttoncontainer">
+
+            <input type="button" 
+                   class="button width25 rightpadded"
+                   onclick="self.root.clearAreaForFirstTime(true)"
+                   value="Clear">        
+                           
+            <input type="button" 
+                   class="button width25 rightpadded"
+                   onclick="self.root.convertInputCoord()"
+                   value="To Decimal Degrees">
+                
+            <span style="font-family:Arial;font-size:1em;"
+                  class="width25 padded center lightskyblue rounded"
+                  title='Many systems (i.e. GeoJSON) require coordinates in x,y format but Lat/Long are actually y,x.  This option reverses the output. Clicking [To Decimal Degrees] repeatedly will flip the order back and forth.'>
+
+                <input type="checkbox" 
+                       name="xy"
+                       class="leftpadded">
+                
+                Long / Lat (flip to x,y)
+        
+        <view class="rel" width="%%{self.parent.width}" 
+            height="%%{self.parent.height;;value-self.offsetTop}" 
+            traits="SizedToWindow" 
+            name="convertinputview">
+    
+            // Hitch our textarea so stays securely in the window: 
+            // overflow seems to interfere with key capture making it hard to type
+            //onHeight:"%%{self.height ;; self.$child('convertinput').height(value*0.95 , console.log(self.$child('convertinput')))}",
+            onWidth:"%%{self.width;;self.$child('convertinput').width(value*0.95)}",
+            //onLeft::"%%{self.width ;; self.$child('convertinput').left(1)}",
+            //onTop::"%%{self.height ;; self.$child('convertinput').top( self.$child('convertinput').offsetTop - 4)}",
+            __ready__:function(){
+                self.$child('convertinput').val('Enter a Lat,Long coordinate pair or a single coordinate.'); 
+            }
+            <input type="text" 
+                   class="left clickable margined"
+                   name="convertinput"
+                   __click__="self.root.clearAreaForFirstTime()">
+</script>
