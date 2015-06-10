@@ -22,7 +22,7 @@
  -------------------------------------------------------------------------------->
 
 
- <script id="HyperLeaf" type="text/hypertag">
+ <script id="Hyperleaf" type="text/hypertag">
     <!-- markup shml -->
 /*    
  *      Hyperleaf will take any valid GeoJSON object and generate a Leaflet map with it.
