@@ -1,3 +1,2 @@
-Repo reinitalied after .git directory destroyed.
-Simply pulling and replacing that dir should have worked
-but somehow the Hyperwidgets dir just wouldn't track. 
+Directory namespace cleanup.
+Extraneous files dumped.
