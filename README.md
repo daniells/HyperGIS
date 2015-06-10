@@ -75,7 +75,7 @@ This is the luxury Lat/Lon Coordinate-Convter.  Just paste and click the button.
 --------------------------------------------------------------------------------------------------------------
 Escaping a string for hardcoding messages into Javascript is irritating.  There's always a character you forgot, and debugging a large text block becomes so fraught with annoyances you start making UI design chocies around the problem, where some dynamically-loaded exposition really would have been appropriate.
 
-With this escape converter you can just type or paste your message into the <textarea> and click \[Text To String\].  
+With this escape converter you can just type or paste your message into the <textarea> and click **Text To String**  
 
 In Progress
 ===========
