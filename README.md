@@ -22,9 +22,9 @@ Available Projects
 ==================
 These are projects in a mostly-working state.
 
-[HyperLeaf](http://hypergis-somanova.c9.io/hyperLeaf/HyperLeaf.hyp "Hosted on C9")
+[Hyperleaf](http://hypergis-somanova.c9.io/hyperLeaf/HyperLeaf.hyp "Hosted on C9")
 --------------------------------------------------------------------------------------------------------------
-Hyperleaf.hyp is a hypertag template that wraps a leaflet map and gives it a view-based API.  
+Hyperleaf.hyp is a hypertag template that wraps a Leaflet map and gives it a view-based API.  
 
 Documentation for Hyperleaf is forthcoming.  Development is always ongoing.  But it's always in a working state at this URL.
 
@@ -75,8 +75,7 @@ This is the luxury Lat/Lon Coordinate-Convter.  Just paste and click the button.
 --------------------------------------------------------------------------------------------------------------
 Escaping a string for hardcoding messages into Javascript is irritating.  There's always a character you forgot, and debugging a large text block becomes so fraught with annoyances you start making UI design chocies around the problem, where some dynamically-loaded exposition really would have been appropriate.
 
-With this escape converter you can just type or paste your message into the <textarea> and click
-[Text To String].  
+With this escape converter you can just type or paste your message into the <textarea> and click \[Text To String\].  
 
 In Progress
 ===========
