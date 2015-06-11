@@ -22,7 +22,7 @@ Available Projects
 ==================
 These are projects in a mostly-working state.
 
-[Hyperleaf](http://hypergis-somanova.c9.io/hyperleaf/Hypereaf.hyp "Hosted on C9")
+[Hyperleaf](https://github.com/daniells/HyperGIS/blob/master/hyperleaf/Hyperleaf.hyp)
 --------------------------------------------------------------------------------------------------------------
 Hyperleaf.hyp is a hypertag template that wraps a Leaflet map and gives it a view-based API.  
 
@@ -48,7 +48,7 @@ These two approaches give you different functionality, and let you choose betwee
 ##### Dynamic features
 * **boundsNow\(obj\)** Given an object or array this will zoom the map to the outer extent of all coordinates hiding inside it
 * **collectionBoundsNow\(\)**  This will zoom the map to the extent of the bounds on the self.collection_bounds proeprty. That property is a good place to have a list of all the fitbouds objects you've accumulated.* 
-* All [map methods](http://leafletjs.com/reference.html#map-set-methods "Leaflet docs") are also available on the view on \_\_load\_\_ : see 
+* All [map methods](http://leafletjs.com/reference.html#map-set-methods "Leaflet docs") are also available on the view \(on \_\_load\_\_\)
 
 ##### Utility Features
 * **_esri_feature_type_to_leaflet_layer_factory\[num\]\(data\)**   given the number of an ESRI shp feature type this will return the corresponding Leaflet layer type generated using data
@@ -57,7 +57,7 @@ These two approaches give you different functionality, and let you choose betwee
 * **centroid\(boundary\)**    Given a polyline or polygon, returns the centroid.  If the data was munged returns false.
 * **findOuterBoundsInData\(obj or array)**  Given any sort of obejct or array caontaining coordinates, searches recursively and returns the outer bounds of that data.
 
-[Latitude and Longitude Coordinate Converter](http://hypergis-somanova.c9.io/latlon/index.html "Hosted on C9")
+[Latitude and Longitude Coordinate Converter](https://github.com/daniells/HyperGIS/blob/master/hyperleaf/Hyperleaf.hyp "Hosted on C9")
 --------------------------------------------------------------------------------------------------------------
 99.99999% of GIS software only accepts decimal coordinates.  But you have coordintes in Degree-Minutes-Seconds from some historical source.  Or maybe it's degrees + decimal minutes.  
 
