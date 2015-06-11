@@ -1,5 +1,5 @@
  <!------------------------------------------------------------------------------
-    HyperLeaf: a Hypertag wrapper for Leaflet.js                        v 0.251
+    Hyperleaf: a Hypertag wrapper for Leaflet.js                        v 0.251
 
     Templates:
       <HyperLeaf>       A data-driven Leaflet template with layer management
@@ -107,9 +107,12 @@
       /*************/
      /* Map Hooks */
     /*************/
-    // these will just become a hooks to L.map methods on __load__
-    setView:false,
-    
+    // All of the Map control methods you will find in 
+    // http://leafletjs.com/reference.html#map-set-methods 
+    // these will be set on the Hyperleaf view as hooks to the map 
+    // so that you can use methods like 
+    //     self.setView(options);
+    // This will occur on __load__
     
     
       /***********************************/
@@ -585,8 +588,20 @@
                 .addTo(self.map);
         /*
          *      MAP METHOD HOOK SETUP
+         *
+         *      Everything from http://leafletjs.com/reference.html#map-set-methods
+         *      Placed on the view so that they are acceible by self.method()
          */
-        self.setView = self.map.setView;
+        // Methods for Modifying Map State
+        self.setView=self.map.setView;self.setZoom=self.map.setZoom;self.zoomIn=self.map.zoomIn;self.zoomOut=self.map.zoomOut;self.setZoomAround=self.map.setZoomAround;self.fitBounds=self.map.fitBounds;self.fitWorld=self.map.fitWorld;self.panTo=self.map.panTo;self.panInsideBounds=self.map.panInsideBounds;self.panBy=self.map.panBy;self.invalidateSize=self.map.invalidateSize;self.invalidateSize=self.map.invalidateSize;self.setMaxBounds=self.map.setMaxBounds;self.locate=self.map.locate;self.stopLocate=self.map.stopLocate;self.remove=self.map.remove;
+        // Methods for Getting Map State
+        self.getCenter=self.map.getCenter;self.getZoom=self.map.getZoom;self.getMinZoom=self.map.getMinZoom;self.getMaxZoom=self.map.getMaxZoom;self.getMaxZoom=self.map.getMaxZoom;self.getBounds=self.map.getBounds;self.getBoundsZoom=self.map.getBoundsZoom;self.getSize=self.map.getSize;self.getPixelBounds=self.map.getPixelBounds;self.getPixelOrigin=self.map.getPixelOrigin;
+        // Methods for Layers and Controls
+        self.addLayer=self.map.addLayer;self.removeLayer=self.map.removeLayer;self.hasLayer=self.map.hasLayer;self.eachLayer=self.map.eachLayer;self.openPopup=self.map.openPopup;self.closePopup=self.map.closePopup;self.addControl=self.map.addControl;self.removeControl=self.map.removeControl;
+        // Conversion Methods
+        self.latLngToLayerPoint=self.map.latLngToLayerPoint;self.layerPointToLatLng=self.map.layerPointToLatLng;self.containerPointToLayerPoint=self.map.containerPointToLayerPoint;self.layerPointToContainerPoint=self.map.layerPointToContainerPoint;self.latLngToContainerPoint=self.map.latLngToContainerPoint;self.containerPointToLatLng=self.map.containerPointToLatLng;self.project=self.map.project;self.unproject=self.map.unproject;self.mouseEventToContainerPoint=self.map.mouseEventToContainerPoint;self.mouseEventToLayerPoint=self.map.mouseEventToLayerPoint;self.mouseEventToLatLng=self.map.mouseEventToLatLng;
+        // Other Methods
+        self.getContainer=self.map.getContainer;self.getPanes=self.map.getPanes;self.whenReady=self.map.whenReady;
         /*
          *      USER CONTROL VAR SETUP
          */

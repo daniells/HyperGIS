@@ -22,11 +22,11 @@ Available Projects
 ==================
 These are projects in a mostly-working state.
 
-[Hyperleaf](http://hypergis-somanova.c9.io/hyperLeaf/HyperLeaf.hyp "Hosted on C9")
+[Hyperleaf](http://hypergis-somanova.c9.io/hyperleaf/Hypereaf.hyp "Hosted on C9")
 --------------------------------------------------------------------------------------------------------------
 Hyperleaf.hyp is a hypertag template that wraps a Leaflet map and gives it a view-based API.  
 
-Documentation for Hyperleaf is forthcoming.  Development is always ongoing.  But it's always in a working state at this URL.
+Documentation for Hyperleaf is forthcoming.  Development is always ongoing.  But it's always in a working state in this GitHub repo.
 
 HyperLeaf is under an MIT license.
 
@@ -48,6 +48,7 @@ These two approaches give you different functionality, and let you choose betwee
 ##### Dynamic features
 * **boundsNow\(obj\)** Given an object or array this will zoom the map to the outer extent of all coordinates hiding inside it
 * **collectionBoundsNow\(\)**  This will zoom the map to the extent of the bounds on the self.collection_bounds proeprty. That property is a good place to have a list of all the fitbouds objects you've accumulated.* 
+* all map.methods are also available on the view. when it __load__ s
 
 ##### Utility Features
 * **_esri_feature_type_to_leaflet_layer_factory\[num\]\(data\)**   given the number of an ESRI shp feature type this will return the corresponding Leaflet layer type generated using data
