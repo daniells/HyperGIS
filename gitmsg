@@ -1,3 +1,1 @@
-Map method hooks added to the view level.
-They are all available now on __load__, i.e.
-map.setView() is synonymous with self.setView()
+README.md updated

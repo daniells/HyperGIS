@@ -48,7 +48,7 @@ These two approaches give you different functionality, and let you choose betwee
 ##### Dynamic features
 * **boundsNow\(obj\)** Given an object or array this will zoom the map to the outer extent of all coordinates hiding inside it
 * **collectionBoundsNow\(\)**  This will zoom the map to the extent of the bounds on the self.collection_bounds proeprty. That property is a good place to have a list of all the fitbouds objects you've accumulated.* 
-* all map.methods are also available on the view. when it __load__ s
+* All [map methods](http://leafletjs.com/reference.html#map-set-methods "Leaflet docs") are also available on the view on \_\_load\_\_ : see 
 
 ##### Utility Features
 * **_esri_feature_type_to_leaflet_layer_factory\[num\]\(data\)**   given the number of an ESRI shp feature type this will return the corresponding Leaflet layer type generated using data
