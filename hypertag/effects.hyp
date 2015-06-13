@@ -1,0 +1,65 @@
+
+<!-- Special effects -->
+<!--
+    FlipRotateOnLoad
+    HorizExpandOnLoad
+    VertExpandOnLoad
+-->
+<script id="FlipRotateOnLoad" type="text/hypertag">
+    <!-- markup shml -->
+    
+    __load__:function(){
+                    
+            var $self = $(self);
+            $self.css({
+                transform:"rotateX(180deg) rotateY(180deg) rotateZ(180deg)",
+                transition:"0s"
+            });
+            
+            setTimeout(function(){
+                $self.css({
+                    transform:"rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+                    transition:"0.5s"
+                });
+            }, 500);
+    }
+    
+</script>
+
+<script id="HorizExpandOnLoad" type="text/hypertag">
+    <!-- markup shml -->
+    
+    __load__:function(){
+        var $self = $(self);
+        $self.css({
+            transform:"rotateY(90deg)",
+            transition:"10ms"
+        });
+        
+        setTimeout(function(){
+            $self.css({
+                transform:"rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+                transition:"2s"
+            });
+        }, 500);
+    }
+</script>
+
+<script id="VertExpandOnLoad" type="text/hypertag">
+    <!-- markup shml -->
+    
+    __load__:function(){
+        var $self = $(self);
+        $self.css({
+            transform:"rotateX(90deg)",
+            transition:"0s"
+        });
+        
+        setTimeout(function(){
+            $self.css({
+                transform:"rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+                transition:"2s"
+            });
+        }, 500);
+    }
+</script>

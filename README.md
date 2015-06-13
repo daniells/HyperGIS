@@ -4,7 +4,7 @@
 
 Licenses & Hosting
 ------------------
-This project namespace is hosted [on GitHub](https://github.com/daniells/HyperGIS) and [also on C9.io](https://ide.c9.io/somanova/hypergis) which serves the pages when its Apache instance doesn't go down.
+This project namespace is hosted [on GitHub](https://github.com/daniells/HyperGIS) and [examples on C9.io](https://ide.c9.io/somanova/hypergis) which serves the pages when its Apache instance doesn't go down.
 
 Any code I wrote here is under a [CC ShareAlike license](http://creativecommons.org/licenses/by-sa/4.0) (unless otherwise noted) and you can reuse it.  Just leave the author comments in the top of the files.
 
@@ -28,7 +28,7 @@ Hyperleaf.hyp is a hypertag template that wraps a Leaflet map and gives it a vie
 
 Documentation for Hyperleaf is forthcoming.  Development is always ongoing.  But it's always in a working state in this GitHub repo.
 
-HyperLeaf is under an MIT license.
+HyperLeaf is under an [MIT license](http://opensource.org/licenses/MIT).
 
 ####Features
 There are two classes of Hyperleaf features: dynamic and reload-based.  
@@ -57,7 +57,7 @@ These two approaches give you different functionality, and let you choose betwee
 * **centroid\(boundary\)**    Given a polyline or polygon, returns the centroid.  If the data was munged returns false.
 * **findOuterBoundsInData\(obj or array)**  Given any sort of obejct or array caontaining coordinates, searches recursively and returns the outer bounds of that data.
 
-[Latitude and Longitude Coordinate Converter](https://github.com/daniells/HyperGIS/blob/master/hyperleaf/Hyperleaf.hyp "Hosted on C9")
+[Latitude and Longitude Coordinate Converter](http://hypergis-somanova.c9.io/latlon/index.html "Hosted on C9")
 --------------------------------------------------------------------------------------------------------------
 99.99999% of GIS software only accepts decimal coordinates.  But you have coordintes in Degree-Minutes-Seconds from some historical source.  Or maybe it's degrees + decimal minutes.  
 

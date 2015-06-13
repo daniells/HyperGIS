@@ -565,7 +565,7 @@
     /**********/
     __init__:function(){
         self.map_id = self.map_id ? self.map_id : self.makeGUID();
-        GLOBAL.findOuterBoundsInData = self.findOuterBoundsInData;
+        GLOBAL.Hyperleaf = self;
     },
     __load__: function(){
         /*
@@ -586,8 +586,7 @@
                     attribution: '&#169; {-a href="http:\/\/openstreetmap.org\/copyright"-}OpenStreetMap{-\/a-} contributors'
                 })
                 .addTo(self.map);
-        /*
-         *      MAP METHOD HOOK SETUP
+        /*      MAP METHOD HOOK SETUP
          *
          *      Everything from http://leafletjs.com/reference.html#map-set-methods
          *      Placed on the view so that they are acceible by self.method()
@@ -602,6 +601,13 @@
         self.latLngToLayerPoint=self.map.latLngToLayerPoint;self.layerPointToLatLng=self.map.layerPointToLatLng;self.containerPointToLayerPoint=self.map.containerPointToLayerPoint;self.layerPointToContainerPoint=self.map.layerPointToContainerPoint;self.latLngToContainerPoint=self.map.latLngToContainerPoint;self.containerPointToLatLng=self.map.containerPointToLatLng;self.project=self.map.project;self.unproject=self.map.unproject;self.mouseEventToContainerPoint=self.map.mouseEventToContainerPoint;self.mouseEventToLayerPoint=self.map.mouseEventToLayerPoint;self.mouseEventToLatLng=self.map.mouseEventToLatLng;
         // Other Methods
         self.getContainer=self.map.getContainer;self.getPanes=self.map.getPanes;self.whenReady=self.map.whenReady;
+        /*
+        var internalmethod = new RegExp("/^_");
+        for(var key in self.map){
+            if(!key.match(internalmethod) && self.map[key].constructor === Function )
+                self[key] = self.map[key];
+        }
+        */
         /*
          *      USER CONTROL VAR SETUP
          */

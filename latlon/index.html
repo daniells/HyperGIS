@@ -17,6 +17,7 @@
         <script src="/hypertag/Hypertag.dependencies.js" type="text/javascript"></script>
         <script src="/hypertag/Hypertag.js" type="text/javascript"></script>
         <script url="/hypertag/builtins.hyp" type="library/hypertag"></script>
+        <script url="/hypertag/effects.hyp" type="library/hypertag"></script>
         
         <!-- app widgets -->
         <script url="/latlon/LatLonDegreesConverter.hyp" type="library/hypertag"></script>
@@ -38,13 +39,15 @@
                                 class="abs lightblue shadowed" 
                                 width="%%{self.root.width}"
                                 height="100"
-                                top="0">
+                                top="0"
+                                traits="FlipRotateOnLoad">
 
         <Hyperleaf name="Hyperleaf"
                    class="abs offwhite"
                    width="%%{self.root.width;;value - 20}"
                    height="%%{self.parent.height;;value-self.sibling('LatLonDegreesConverter').height-19}"
-                   top="100">
+                   top="100"
+                   traits="HorizExpandOnLoad">
                    
             click_sets_coordinate:true,
             // If you are a GIS professional, you could do much better than to work here.
@@ -67,6 +70,7 @@
                 listen(self, "clicked_coord", function(value){ 
                     self.$coorddisplayfield.val(String(value.latlng.lat) + ", " + String(value.latlng.lng));
                 });
+
             }
             
             <view class="abs shadowed arial smaller centered smalltoppadded"
@@ -83,6 +87,6 @@
     </script>
     
     <body>
-        <div class="abs hypertag lightblue" template="PageContainer" traits="SizedToWindow"></div>
+        <div class="abs hypertag lightblue" template="PageContainer" traits="SizedToWindow,VertExpandOnLoad"></div>
     </body>
 </html>
