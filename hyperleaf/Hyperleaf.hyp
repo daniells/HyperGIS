@@ -591,6 +591,7 @@
          *      Everything from http://leafletjs.com/reference.html#map-set-methods
          *      Placed on the view so that they are acceible by self.method()
          */
+        /*
         // Methods for Modifying Map State
         self.setView=self.map.setView;self.setZoom=self.map.setZoom;self.zoomIn=self.map.zoomIn;self.zoomOut=self.map.zoomOut;self.setZoomAround=self.map.setZoomAround;self.fitBounds=self.map.fitBounds;self.fitWorld=self.map.fitWorld;self.panTo=self.map.panTo;self.panInsideBounds=self.map.panInsideBounds;self.panBy=self.map.panBy;self.invalidateSize=self.map.invalidateSize;self.invalidateSize=self.map.invalidateSize;self.setMaxBounds=self.map.setMaxBounds;self.locate=self.map.locate;self.stopLocate=self.map.stopLocate;self.remove=self.map.remove;
         // Methods for Getting Map State
@@ -601,7 +602,6 @@
         self.latLngToLayerPoint=self.map.latLngToLayerPoint;self.layerPointToLatLng=self.map.layerPointToLatLng;self.containerPointToLayerPoint=self.map.containerPointToLayerPoint;self.layerPointToContainerPoint=self.map.layerPointToContainerPoint;self.latLngToContainerPoint=self.map.latLngToContainerPoint;self.containerPointToLatLng=self.map.containerPointToLatLng;self.project=self.map.project;self.unproject=self.map.unproject;self.mouseEventToContainerPoint=self.map.mouseEventToContainerPoint;self.mouseEventToLayerPoint=self.map.mouseEventToLayerPoint;self.mouseEventToLatLng=self.map.mouseEventToLatLng;
         // Other Methods
         self.getContainer=self.map.getContainer;self.getPanes=self.map.getPanes;self.whenReady=self.map.whenReady;
-        /*
         var internalmethod = new RegExp("/^_");
         for(var key in self.map){
             if(!key.match(internalmethod) && self.map[key].constructor === Function )
