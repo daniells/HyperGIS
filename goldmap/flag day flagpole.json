@@ -1,0 +1,21 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "flag day flagpole",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.29350566,
+                    39.70299846,
+                    2508
+                ]
+            }
+        }
+    ]
+}

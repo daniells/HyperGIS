@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!-- 
+    Concierge Map tool for Golden.com
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>Golden.com Concierge</title>
+
+        <!-- Hypertag -->
+        <link href="http://cdn.hypertag.io/verbs.css" media="all" rel="stylesheet" type="text/css"></link>
+        <!-- script src="http://cdn.hypertag.io/Hypertag.min.js" type="text/javascript"></script -->
+        <script src="/hypertag/Hypertag.13.min.js" type="text/javascript"></script>
+        <!-- script url="http://cdn.hypertag.io/builtins.hyp" type="library/hypertag"></script -->
+        <script url="/hypertag/builtins.hyp" type="library/hypertag"></script>
+
+        <!-- hyp libraries -->
+        <script url="/hyperleaf/Hyperleaf.hyp" type="library/hypertag"></script>
+        <script url="/hyperleaf/GoogleGeoCode.hyp" type="library/hypertag"></script>
+
+        <!-- leaflet components -->
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"></link>
+        <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+        
+        <!-- geodata -->
+        <script src="/goldmap/features.js" type="text/javascript"></script>
+        
+    </head>
+
+    <script id="Categories" type="text/hypertag">
+        
+        
+    </script>
+
+    <script id="Features" type="text/hypertag">
+        
+    </script>
+
+    <script id="HyperleafInvocation" type="text/hypertag">
+        <!-- markup shml -->
+        <Hyperleaf height="%%{self.parent.height;;value-20}" 
+                   width="%%{self.parent.width-10}">	
+
+            //geojson_source:"geojson/HEALTH_HealthClinics.geojson",
+            //geojson_source:"geojson/BOUNDARY_Zipcodes.geojson",
+            //geojson_source:"geojson/HISTORICAL_HistoricDistricts.geojson",
+            //geojson_source:"geojson/DEMOGRAPHICS_BlockGroups1990.geojson",
+            //geojson_source:"geojson/TestFeatureGroup.json",
+
+            geojson_source:"geojson/Aleutians East.geo.json",
+            //geojson_source:"",
+
+            //map_center:[42.403348252467865,-71.13427183602411],
+            map_scale:6,
+            use_geojson_bounds:true
+    </script>
+
+    <script id="Page" type="text/hypertag">
+        <!-- markup shml -->
+
+        <Hyperleaf name="Hyperleaf"
+                   class="rel width100" 
+                   height="%%{self.parent.height}"
+                   traits="GoogleGeoCode">
+            __init__:function(){
+                //set up a listen on self.goog_geocode_result
+                listen(self, 'goog_geocode_result', function(){
+                    var marker_contents = self.named('marker_contents');
+                    // if there are marker contents, put a new div with the geocode result inside it
+                    if(marker_contents){
+                       var geocode_display_elem = document.createElement('div');
+                       $(geocode_display_elem).text(self.goog_geocode_result).addClass('evensmaller');
+                       marker_contents.appendChild(geocode_display_elem);
+                    }
+                    //$(self).find(".leaflet-popup-pane").width("230");
+                    //$(self).find(".leaflet-popup-content").width("230");
+                });
+            },
+            map_scale:14,
+            map_center:[51.477222222222224,0],
+            follow_user:{setView:false,timeout:100}
+    </script>
+
+    <body>
+        <div template="Page"
+             class="hypertag whiteGradient" 
+             traits="SizedToWindow"/>
+    </body>
+    
+</html>

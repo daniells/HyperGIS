@@ -2,15 +2,19 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
-        <title>Leaflet API</title>
+        <title>WhereAmI</title>
 
         <!-- Hypertag -->
         <link href="http://cdn.hypertag.io/verbs.css" media="all" rel="stylesheet" type="text/css"></link>
-        <script src="http://cdn.hypertag.io/Hypertag.min.js" type="text/javascript"></script>
-        <script url="http://cdn.hypertag.io/builtins.hyp" type="library/hypertag"></script>
+        <!-- script src="http://cdn.hypertag.io/Hypertag.min.js" type="text/javascript"></script -->
+        <script src="/hypertag/Hypertag.13.min.js" type="text/javascript"></script>
+        <!-- script url="http://cdn.hypertag.io/builtins.hyp" type="library/hypertag"></script -->
+        <script url="/hypertag/builtins.hyp" type="library/hypertag"></script>
+        
         
         <!-- hyp libraries -->
-        <script url="Hyperleaf.hyp" type="library/hypertag"></script>
+        <script url="/hyperleaf/Hyperleaf.hyp" type="library/hypertag"></script>
+        <script url="/hyperleaf/GoogleGeoCode.hyp" type="library/hypertag"></script>
         
         <!-- leaflet components -->
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"></link>
@@ -18,17 +22,13 @@
         
     </head>
 
-    <script id="Concierge" type="text/hypertag">
+    <script id="WhereAmI" type="text/hypertag">
         <!-- markup shml -->
-    
-        <AttractionList name="GeoJSONList"
-                        class="rel scrollabley eurostyle width100">
-                
+
         <Hyperleaf name="Hyperleaf"
                    class="rel width100" 
-                   height="%%{self.parent.height;;value-20}"
-                   autoload="%{false}">
-    
+                   height="%%{self.parent.height}"
+                   traits="GoogleGeoCode">
             __init__:function(){
                 //set up a listen on self.goog_geocode_result
                 listen(self, 'goog_geocode_result', function(){
@@ -43,39 +43,33 @@
                     //$(self).find(".leaflet-popup-content").width("230");
                 });
             },
-            __loading__:function(){
-                // Prerform the address lookup
-                self.googleGeoCode(self.map_marker.slice(0, 2), true, false);
-            }
-    </script>
-    
-    <script id="AttractionList" type="text/hypertag">
-        
-        
+            map_scale:14,
+            map_center:[51.477222222222224,0],
+            follow_user:{setView:false,timeout:100}
     </script>
 
     <script id="HyperleafInvocation" type="text/hypertag">
         <!-- markup shml -->
         <Hyperleaf height="%%{self.parent.height;;value-20}" 
                    width="%%{self.parent.width-10}">	
-            
+
             //geojson_source:"geojson/HEALTH_HealthClinics.geojson",
             //geojson_source:"geojson/BOUNDARY_Zipcodes.geojson",
             //geojson_source:"geojson/HISTORICAL_HistoricDistricts.geojson",
             //geojson_source:"geojson/DEMOGRAPHICS_BlockGroups1990.geojson",
             //geojson_source:"geojson/TestFeatureGroup.json",
-            
+
             geojson_source:"geojson/Aleutians East.geo.json",
-            //geojson_source:""
+            //geojson_source:"",
 
             //map_center:[42.403348252467865,-71.13427183602411],
             map_scale:6,
             use_geojson_bounds:true
     </script>
+
     <body>
-        <div template="Concierge"
+        <div template="WhereAmI"
              class="hypertag whiteGradient" 
              traits="SizedToWindow"/>
-            
     </body>
 </html>

@@ -1,0 +1,724 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "kayak racer statue",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22853225,
+                    39.7542698,
+                    1723
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "image note",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22853021,
+                    39.75426889,
+                    1723
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "map note",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22852108,
+                    39.75427425,
+                    1725
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "image note",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22854184,
+                    39.75428895,
+                    1724
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Eddie at bat",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22695382,
+                    39.75441509,
+                    1714
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Victorian girl",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22559381,
+                    39.75461614,
+                    1718
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "bears",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22525693,
+                    39.75508864,
+                    1713
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "muscians",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22319009,
+                    39.75627914,
+                    1712
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "return of the cutthroat pt 1",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22298364,
+                    39.75642372,
+                    1714
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "brother and sister at the rodeo",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22265201,
+                    39.7565837,
+                    1717
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "cowboys day off",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22228719,
+                    39.75624344,
+                    1718
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "fffffff",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22199596,
+                    39.75588075,
+                    1717
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "wrigleys mural",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22164528,
+                    39.75562961,
+                    1722
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Adolph Coors",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22164199,
+                    39.7556214,
+                    1723
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Adolph coors",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22152169,
+                    39.75543984,
+                    1726
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Foss mural ",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22080532,
+                    39.7545565,
+                    1725
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "the cowbiy",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22111864,
+                    39.75439872,
+                    1723
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "yoga",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.2213639,
+                    39.75429565,
+                    1721
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "a helping hand",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22068231,
+                    39.75445387,
+                    1720
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "foothills art center",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.21936634,
+                    39.75265359,
+                    1750
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "dedication ",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22056966,
+                    39.75472236,
+                    1721
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22057638,
+                    39.75471431,
+                    1721
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "wpa mural post office",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.21999445,
+                    39.75612818,
+                    1719
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "guar murals",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22027155,
+                    39.75583348,
+                    1722
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "buffalo ",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22141944,
+                    39.75558708,
+                    1720
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "winter wind",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22218955,
+                    39.7566793,
+                    1726
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "return of the cutthroat 2",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22258242,
+                    39.75688587,
+                    1717
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "dragon",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22265773,
+                    39.75762747,
+                    1720
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "dawn if the west",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.2229825,
+                    39.75805685,
+                    1718
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "evergreen stone Indian mural ",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22355086,
+                    39.75750404,
+                    1721
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "bear",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.2231385,
+                    39.75701407,
+                    1724
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "howdy folks",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22301774,
+                    39.75714222,
+                    1719
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "miner ",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22312613,
+                    39.75675832,
+                    1716
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "the newsboy",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22294639,
+                    39.75691955,
+                    1714
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "rotary butterflies ",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22341018,
+                    39.75664926,
+                    1713
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "deer",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22373045,
+                    39.75647857,
+                    1714
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "sons of liberty ",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22440899,
+                    39.75610126,
+                    1713
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "secret gardens",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22556082,
+                    39.75532604,
+                    1711
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "sledding",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22584413,
+                    39.75517631,
+                    1710
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Eddie at bat",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22691384,
+                    39.75443425,
+                    1717
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "kayak racer",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22847422,
+                    39.75425952,
+                    1718
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Victorian girl",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22565995,
+                    39.75463482,
+                    1716
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "beats",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22526593,
+                    39.75506927,
+                    1710
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "bears",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22527092,
+                    39.75508317,
+                    1710
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "musicians ",
+                "desc": "POI",
+                "sym": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -105.22319238,
+                    39.75629045,
+                    1714
+                ]
+            }
+        }
+    ]
+}

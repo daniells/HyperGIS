@@ -6,7 +6,6 @@
         margin:0px;
         overflow:hidden;
     }
-
     body{
         padding:0px;
         margin:0px;
@@ -26,7 +25,7 @@
         });
     }
 </script>
-    
+
 <!-- fullview?? A simple mechanism to take the dimensions of the hypertag parent. -->
 <script id="fullview" type="text/hypertag">
     width:"%%{self.parent.width}",

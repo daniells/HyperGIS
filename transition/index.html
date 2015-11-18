@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!-- 
+    DeeLUX coordinate tool by DLS.
+    Don't forget the ABCs: ALWAYS BE CODIN
+    Keep it OSS.  Keep it real.
+    GIS LYFE, YO.
+    
+    Shout out to the Drew Dog.  Illegitimi non carborundum, brother.
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>Coordinate Tool</title>
+
+        <!-- hypertag -->
+        <link href="/hypertag/verbs.css" media="all" rel="stylesheet" type="text/css"></link>
+        <script src="/hypertag/Hypertag.dependencies.js" type="text/javascript"></script>
+        <script src="/hypertag/Hypertag.js" type="text/javascript"></script>
+        <script url="/hypertag/builtins.hyp" type="library/hypertag"></script>
+        <script url="/hypertag/effects.hyp" type="library/hypertag"></script>
+        
+        <!-- app widgets -->
+        <script url="/latlon/LatLonDegreesConverter.hyp" type="library/hypertag"></script>
+        
+        <!-- leaflet components -->
+        <!-- script src="/lib/leaflet.js" type="text/javascript"></script -->
+        <!-- link href="/lib/leaflet.css" media="all" rel="stylesheet" type="text/css"></link -->
+        <link href="/leaflet/leaflet.css" media="all" rel="stylesheet" type="text/css"></link>
+        <script src="/leaflet/leaflet.js" type="text/javascript"></script>
+        <script src="/leaflet/Leaflet.MakiMarkers.js" type="text/javascript"></script>
+        <script url="/hyperleaf/Hyperleaf.hyp" type="library/hypertag"></script>
+    </head>
+
+    
+    <script id="PageContainer" type="text/hypertag">
+        <!-- markup shml -->
+        
+        <LatLonDegreesConverter name="LatLonDegreesConverter"
+                                class="abs lightblue shadowed" 
+                                width="%%{self.root.width}"
+                                height="100"
+                                top="0"
+                                traits="FlipRotateOnLoad">
+
+        <Hyperleaf name="Hyperleaf"
+                   class="abs offwhite"
+                   width="%%{self.root.width;;value - 20}"
+                   height="%%{self.parent.height;;value-self.sibling('LatLonDegreesConverter').height-19}"
+                   top="100"
+                   traits="HorizExpandOnLoad">
+                   
+            click_sets_coordinate:true,
+            // If you are a GIS professional, you could do much better than to work here.
+            map_center:[39.753388899788874, -465.22017896175385],
+            //map_markers:,
+            map_scale:2,
+            $coorddisplayfield:"[name='coorddisplayfield']",
+            __load__:function(){
+                // Listen to the converter and reload with its output when it converts
+                self.listen(self.sibling('LatLonDegreesConverter'), "yxcoords", function(value){
+                    //40° 26′ 46″ N 79° 58′ 56″ W
+                    self.reload({
+                        map_center:value,
+                        map_scale:15
+                    });
+                    console.log("listen fired  ",self.map_center);
+                });
+                
+                // listen to the clicked_coord attr on myself and display its value in the coorddisplayfield  
+                listen(self, "clicked_coord", function(value){ 
+                    self.$coorddisplayfield.val(String(value.latlng.lat) + ", " + String(value.latlng.lng));
+                });
+
+            }
+            
+            <view class="abs shadowed arial smaller centered smalltoppadded"
+                  name="coordinatedisplay"
+                  height="3"
+                  width="240"
+                  top="%%{self.root.height ;; value-self.height-5}"
+                  right="%%{self.parent.width ;; value-self.width-20}">
+                  
+                <input type="field"
+                       class="rel width100 offwhite"
+                       name="coorddisplayfield"
+                       value="Click the map for coordinates.">
+    </script>
+    
+    <body>
+        <div class="abs hypertag lightblue" template="PageContainer" traits="SizedToWindow,VertExpandOnLoad"></div>
+    </body>
+</html>
